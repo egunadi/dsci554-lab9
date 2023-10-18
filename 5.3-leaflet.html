@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>DSCI 554 Lab</title>
+
+	<link href="./node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+	<script src="./node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+	<link rel="stylesheet" href="./style.css">
+
+	<link href="node_modules/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+	<link rel="stylesheet" href="./github-dark-dimmed.min.css">
+	<script src="./highlight.min.js"></script>
+
+	<script src="./node_modules/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+	<link rel="stylesheet" href="./node_modules/highlightjs-copy/dist/highlightjs-copy.min.css" />
+
+	<script>
+		hljs.highlightAll();
+		hljs.addPlugin(new CopyButtonPlugin());
+	</script>
+</head>
+
+<body>
+	<h1>🧪 Create maps with Leaflet</h1>
+
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="index.html">Index</a></li>
+      <li class="breadcrumb-item active" aria-current="page">🧪 Create maps with Leaflet</li>
+    </ol>
+  </nav>
+
+	<h2>Basic Leaflet example</h2>
+
+	<div>The following implements the example from <a target="_blank" href="https://leafletjs.com/examples/quick-start/">Leaflet Quick Start Guide</a>. To run the code you need to get your own access token and replace <code>YOUR_ACCESS_TOKEN</code> in the code.</div>
+
+	<div class="mt-2 accordion mb-2" id="accordionOne">
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingOne">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
+          aria-expanded="false" aria-controls="collapseOne">
+          Source code
+        </button>
+      </h2>
+      <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne"
+        data-bs-parent="#accordionOne">
+        <div class="accordion-body">
+          <pre><code class="HTML" data-trim data-noescape>&lt;style&gt;
+&lt;link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.2/dist/leaflet.css"
+integrity="sha256-sA+zWATbFveLLNqWO2gtiw3HL/lh1giY/Inf1BJ0z14="
+crossorigin=""/&gt;
+
+&lt;script src="https://unpkg.com/leaflet@1.9.2/dist/leaflet.js"
+integrity="sha256-o9N1jGDZrf5tS+Ft4gbIK7mYMipq9lqpVJ91xHSyKhg="
+crossorigin=""&gt;&lt;/script&gt;
+
+&lt;div id="map"&gt;&lt;/div&gt;
+
+&lt;style&gt;
+#map { height: 280px; }
+&lt;/style&gt;
+
+&lt;script&gt;
+var map = L.map('map').setView([51.505, -0.09], 13);
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+ maxZoom: 19,
+ attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+}).addTo(map);
+
+var marker = L.marker([51.5, -0.09]).addTo(map);
+
+var circle = L.circle([51.508, -0.11], {
+ color: 'red',
+ fillColor: '#f03',
+ fillOpacity: 0.5,
+ radius: 500
+}).addTo(map);
+
+var polygon = L.polygon([
+ [51.509, -0.08],
+ [51.503, -0.06],
+ [51.51, -0.047]
+]).addTo(map);
+
+marker.bindPopup("<b>Hello world!</b><br>I am a popup.").openPopup();
+circle.bindPopup("I am a circle.");
+polygon.bindPopup("I am a polygon.");
+
+var popup = L.popup()
+ .setLatLng([51.513, -0.09])
+ .setContent("I am a standalone popup.")
+ .openOn(map);
+
+function onMapClick(e) {
+ alert("You clicked the map at " + e.latlng);
+}
+
+map.on('click', onMapClick);
+
+var popup = L.popup();
+
+function onMapClick(e) {
+ popup
+  .setLatLng(e.latlng)
+  .setContent("You clicked the map at " + e.latlng.toString())
+  .openOn(map);
+}
+
+map.on('click', onMapClick);
+&lt;/script&gt;</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+	<div class="p-3 mb-3">
+		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.2/dist/leaflet.css"
+		integrity="sha256-sA+zWATbFveLLNqWO2gtiw3HL/lh1giY/Inf1BJ0z14="
+		crossorigin=""/>
+
+		<script src="https://unpkg.com/leaflet@1.9.2/dist/leaflet.js"
+     integrity="sha256-o9N1jGDZrf5tS+Ft4gbIK7mYMipq9lqpVJ91xHSyKhg="
+     crossorigin=""></script>
+
+		 <div id="map"></div>
+
+		 <style>
+			#map { height: 280px; }
+		 </style>
+
+		 <script>
+			var map = L.map('map').setView([51.505, -0.09], 13);
+			L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+				maxZoom: 19,
+				attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+			}).addTo(map);
+
+			var marker = L.marker([51.5, -0.09]).addTo(map);
+
+			var circle = L.circle([51.508, -0.11], {
+				color: 'red',
+				fillColor: '#f03',
+				fillOpacity: 0.5,
+				radius: 500
+			}).addTo(map);
+
+			var polygon = L.polygon([
+				[51.509, -0.08],
+				[51.503, -0.06],
+				[51.51, -0.047]
+			]).addTo(map);
+
+			marker.bindPopup("<b>Hello world!</b><br>I am a popup.").openPopup();
+			circle.bindPopup("I am a circle.");
+			polygon.bindPopup("I am a polygon.");
+
+			var popup = L.popup()
+				.setLatLng([51.513, -0.09])
+				.setContent("I am a standalone popup.")
+				.openOn(map);
+
+			function onMapClick(e) {
+				alert("You clicked the map at " + e.latlng);
+			}
+
+			map.on('click', onMapClick);
+
+			var popup = L.popup();
+
+			function onMapClick(e) {
+				popup
+					.setLatLng(e.latlng)
+					.setContent("You clicked the map at " + e.latlng.toString())
+					.openOn(map);
+			}
+
+			map.on('click', onMapClick);
+		</script>
+	</div>
+
+	<h2>Custom Leaflet map</h2>
+
+	<p>To run the code you need to get your own access token and replace <code>YOUR_ACCESS_TOKEN</code> in the code.</p>
+
+	<div>The following is a custom Leaflet map of USC UPC campus using:
+		<ul>
+			<li>Dark style (see <a target="_blank" href="https://docs.mapbox.com/help/glossary/style-url/">style URL</a> and <a target="_blank" href="https://www.mapbox.com/maps/dark">Mapbox Dark</a>)</li>
+			<li>A pin for USC with a popup (see <a href="https://leafletjs.com/examples/quick-start/">Leaflet Quick Start Guide</a>)</li>
+			<li>Using Mapbox tiles</li>
+		</ul>	
+	</div>
+
+  <div class="mt-2 accordion mb-2" id="accordionOne">
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingOne">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
+          aria-expanded="false" aria-controls="collapseOne">
+          Source code
+        </button>
+      </h2>
+      <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne"
+        data-bs-parent="#accordionOne">
+        <div class="accordion-body">
+          <pre><code class="HTML" data-trim data-noescape>
+&lt;div id="map2" style="height: 300px; margin-top: 50px; position: relative;"&gt;&lt;/div&gt;
+
+&lt;script&gt;
+var map = L.map('map2').setView([34.021124, -118.285804], 15);
+
+//using mapbox tiles
+L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+  attribution: 'Map data © OpenStreetMap contributors, CC-BY-SA, Imagery © Mapbox',
+  maxZoom: 18,
+  id: 'mapbox/dark-v10',
+  tileSize: 512,
+  zoomOffset: -1,
+  accessToken: 'YOUR_ACCESS_TOKEN'
+}).addTo(map);
+
+L.marker([34.021124, -118.285804]).addTo(map)
+  .bindPopup('USC UPC campus.&lt;br&gt; Luciano\'s popup.')
+  .openPopup();
+&lt;/script&gt;</code></pre>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="p-3">
+		<div id="map2" style="height: 300px; margin-top: 50px; position: relative;"></div>
+
+		<script>
+			var map = L.map('map2').setView([34.021124, -118.285804], 15);
+
+			L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+				attribution: 'Map data © OpenStreetMap contributors, CC-BY-SA, Imagery © Mapbox',
+				maxZoom: 18,
+				id: 'mapbox/dark-v10',
+				tileSize: 512,
+				zoomOffset: -1,
+				//accessToken: 'YOUR_ACCESS_TOKEN'
+        accessToken: 'pk.eyJ1Ijoibm9jZXJhIiwiYSI6ImNpbGk2bjNiMTJ2eXV2YW1jdjdweWFtbXoifQ.s6Om8LNYd93IpsgqUqpLzA'
+			}).addTo(map);
+
+			L.marker([34.021124, -118.285804]).addTo(map)
+				.bindPopup('USC UPC campus.<br> Luciano\'s popup.')
+				.openPopup();
+		</script>
+	</div>
+
+  <div class="mt-3 text-end"><a href="#"><i class="bi bi-arrow-up"></i> top</a></div>
+
+</body>
+
+</html>

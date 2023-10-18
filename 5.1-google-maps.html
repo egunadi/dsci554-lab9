@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>DSCI 554 Lab</title>
+
+  <link href="./node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <script src="./node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+  <link rel="stylesheet" href="./style.css">
+
+  <link href="node_modules/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="./github-dark-dimmed.min.css">
+  <script src="./highlight.min.js"></script>
+
+  <script src="./node_modules/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+  <link rel="stylesheet" href="./node_modules/highlightjs-copy/dist/highlightjs-copy.min.css" />
+
+  <script>
+    hljs.highlightAll();
+    hljs.addPlugin(new CopyButtonPlugin());
+  </script>
+</head>
+
+<body>
+  <h1>🧪 Google maps</h1>
+
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="index.html">Index</a></li>
+      <li class="breadcrumb-item active" aria-current="page">🧪 Google maps</li>
+    </ol>
+  </nav>
+
+  <h2>World map</h2>
+
+  <div>The following is an iframe for a google map showing the map of the world (realized by zooming all the way out).</div>
+
+  <div class="mt-2 accordion mb-2" id="accordionOne">
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingOne">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
+          aria-expanded="false" aria-controls="collapseOne">
+          Source code
+        </button>
+      </h2>
+      <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne"
+        data-bs-parent="#accordionOne">
+        <div class="accordion-body">
+          <pre><code class="HTML" data-trim data-noescape>&lt;iframe 
+  src="https://www.google.com/maps/embed?pb=!1m10!1m8!1m3!1d56620391.84366516!2d-77.5717573!3d29.984187!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sus!4v1666471460872!5m2!1sen!2sus" 
+  width="960" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+&gt;&lt;/iframe&gt;</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-3">
+    <iframe class="mb-2"
+      src="https://www.google.com/maps/embed?pb=!1m10!1m8!1m3!1d56620391.84366516!2d-77.5717573!3d29.984187!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sus!4v1666471460872!5m2!1sen!2sus"
+      width="960" height="450" style="border:0;" allowfullscreen="" loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade"></iframe>
+
+    <div><b>Map type: </b> <input type="checkbox" checked /> slippy map <input type="checkbox" /> static map <input
+        type="checkbox" checked /> thematic map</div>
+    <div><b>Map format: </b> <input type="checkbox" checked /> Vector <input type="checkbox" /> Raster </div>
+    <div><b>Projection: </b> <input type="checkbox" checked /> Mercator <input type="checkbox" /> Albers conic
+      <input type="checkbox" /> Lambert conformal conic <input type="checkbox" /> UTM
+    </div>
+    <div><b>Projection type: </b> <input type="checkbox" checked /> Cylindrical <input type="checkbox" /> Conic
+      <input type="checkbox" /> Azimuthal <input type="checkbox" />
+    </div>
+    <div><b>Projection properties preserved: </b> <input type="checkbox" checked /> Conformal <input type="checkbox" />
+      Equal-area <input type="checkbox" /> Equidistant <input type="checkbox" /> Azimuthal
+    </div>
+  </div>
+
+  <h2>Placeholders and areas</h2>
+
+  <div>Google maps uses <a target="_blank" href="https://developers.google.com/kml/documentation">KML</a> (Keyhole Markup Language) to to display geographic data. KML is an XML-based file format used to represent geographic features, such as points, lines, polygons, and images, along with their attributes. Google Maps can read and display KML files, allowing users to create custom maps with various data layers. The following is a Google Maps map showing POIs, lines and polygons.</div>
+
+  <div class="mt-2 accordion mb-2" id="accordionOne">
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingOne">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
+          aria-expanded="false" aria-controls="collapseOne">
+          Source code
+        </button>
+      </h2>
+      <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne"
+        data-bs-parent="#accordionOne">
+        <div class="accordion-body">
+          <pre><code class="HTML" data-trim data-noescape>&lt;iframe 
+  src="https://www.google.com/maps/d/embed?mid=1K9Dspi9VicdrWumazcCY09RP7ILb-qjj&ehbc=2E312F" 
+  width="640" height="480"
+&gt;&lt;/iframe&gt;</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+  <iframe src="https://www.google.com/maps/d/embed?mid=1K9Dspi9VicdrWumazcCY09RP7ILb-qjj&ehbc=2E312F" width="640" height="480"></iframe>
+
+  <div class="mt-3 text-end"><a href="#"><i class="bi bi-arrow-up"></i> top</a></div>
+
+</body>
+
+</html>

@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>DSCI 554 Lab</title>
+
+  <link href="./node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <script src="./node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+  <link rel="stylesheet" href="./style.css">
+
+  <link href="node_modules/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="./github-dark-dimmed.min.css">
+  <script src="./highlight.min.js"></script>
+
+  <script src="./node_modules/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+  <link rel="stylesheet" href="./node_modules/highlightjs-copy/dist/highlightjs-copy.min.css" />
+
+  <script>
+    hljs.highlightAll();
+    hljs.addPlugin(new CopyButtonPlugin());
+  </script>
+
+  <script src="node_modules/d3/dist/d3.min.js"></script>
+
+</head>
+
+<body>
+  <h1>🧪 D3 TopoJSON map</h1>
+
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="index.html">Index</a></li>
+      <li class="breadcrumb-item active" aria-current="page">🧪 D3 TopoJSON map</li>
+    </ol>
+  </nav>
+
+  <h2>US Map</h2>
+
+  <h3>TopoJSON</h3>
+
+  <p>The TopoJSON file <a href="https://github.com/topojson/us-atlas#counties-10m.json">counties-10m.json</a> is
+    downloaded from <a target="_blank" href="https://github.com/topojson/us-atlas">U.S. Atlas TopoJSON</a> and contains
+    the geometry collections counties, states, and nation. <mark>The geometry is quantized and simplified, but not
+      projected. In cartography, the scale of a map represents the ratio of a distance on the map to the corresponding distance on the ground. A scale of 1:10m corresponds to a ration of 1:10,000,000 and is considered a large scale.</mark> The D3 code is adapted from <a target="_blank" href="https://bl.ocks.org/mbostock/4090848">Block
+      4090848</a> and uses CSS hover pseudo-class to implement highlighting on mouse hover.</p>
+
+  <p></p>
+  <div class="mt-2 accordion mb-2" id="accordionTwo">
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingTwo">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo"
+          aria-expanded="false" aria-controls="collapseTwo">
+          Source code
+        </button>
+      </h2>
+      <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
+        data-bs-parent="#accordionTwo">
+        <div class="accordion-body">
+          <pre><code class="HTML" data-trim data-noescape>&lt;style&gt;
+  .states {
+    fill: whitesmoke;
+  }
+
+  .states :hover {
+    fill: red;
+  }
+
+  .state-borders {
+    fill: none;
+    stroke: black;
+    stroke-width: 0.5px;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+    pointer-events: none;
+  }
+&lt;/style&gt;
+
+&lt;script src="node_modules/topojson-client/dist/topojson-client.min.js"&gt;&lt;/script&gt;
+&lt;svg id="svg1" style="background-color:lightblue" width="960" height="600"&gt;&lt;/svg&gt;
+
+&lt;script&gt;
+d3.json('data/counties-10m.json').then(us => {
+  var width = 960;
+  var height = 600;
+
+  // Convert TopoJSON to GeoJSON
+  var feature = topojson.feature(us, us.objects.states);
+
+  // Create a geo path generator with Albers projection
+  var path = d3.geoPath()
+    .projection(d3.geoAlbersUsa()
+      .fitSize([width, height], feature));
+
+  var svg = d3.select('#svg1')
+    .attr('width', width)
+    .attr('height', height);
+
+  svg.append('g')
+    .attr('class', 'states')
+    .selectAll('path')
+    .data(feature.features)
+    .enter()
+    .append('path')
+    .attr('d', path);
+
+  svg.append('path')
+    .attr('class', 'state-borders')
+    .attr('d', path(topojson.mesh(us, us.objects.states, (a, b) => a !== b)));
+});
+&lt;/script&gt;</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-3">
+    <style>
+      .states {
+        fill: whitesmoke;
+      }
+
+      .states :hover {
+        fill: red;
+      }
+
+      .state-borders {
+        fill: none;
+        stroke: black;
+        stroke-width: 0.5px;
+        stroke-linejoin: round;
+        stroke-linecap: round;
+        pointer-events: none;
+      }
+    </style>
+
+    <script src="node_modules/topojson-client/dist/topojson-client.min.js"></script>
+    <svg id="svg1" style="background-color:lightblue" width="960" height="600"></svg>
+
+    <script>
+      d3.json('data/counties-10m.json').then(us => {
+        var width = 960;
+        var height = 600;
+
+        // Convert TopoJSON to GeoJSON
+        var feature = topojson.feature(us, us.objects.states);
+
+        // Create a geo path generator with Albers projection
+        var path = d3.geoPath()
+          .projection(d3.geoAlbersUsa()
+            .fitSize([width, height], feature));
+
+        var svg = d3.select('#svg1')
+          .attr('width', width)
+          .attr('height', height);
+
+        svg.append('g')
+          .attr('class', 'states')
+          .selectAll('path')
+          .data(feature.features)
+          .enter()
+          .append('path')
+          .attr('d', path);
+
+        svg.append('path')
+          .attr('class', 'state-borders')
+          .attr('d', path(topojson.mesh(us, us.objects.states, (a, b) => a !== b)));
+      });
+    </script>
+  </div>
+
+  <h3>Projected TopoJSON</h3>
+
+  <p>The TopoJSON file <a
+      href="https://github.com/topojson/us-atlas/tree/master#counties-albers-10m.json">counties-albers-10m.json</a> is
+    downloaded from <a target="_blank" href="https://github.com/topojson/us-atlas">U.S. Atlas TopoJSON</a> and contains
+    the geometry collections counties, states, and nation. <mark>The geometry is quantized, projected using
+      d3.geoAlbersUsa to fit a 975×610 viewport, and simplified.</mark> The D3 code is adapted from <a target="_blank"
+      href="https://bl.ocks.org/mbostock/4090848">Block 4090848</a> and
+    uses CSS hover pseudo-class to implement highlighting on mouse hover.</p>
+
+  <div class="mt-2 accordion mb-2" id="accordionTwo">
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingTwo">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo"
+          aria-expanded="false" aria-controls="collapseTwo">
+          Source code
+        </button>
+      </h2>
+      <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
+        data-bs-parent="#accordionTwo">
+        <div class="accordion-body">
+          <pre><code class="HTML" data-trim data-noescape>&lt;style&gt;
+  .states {
+    fill: whitesmoke;
+  }
+
+  .states :hover {
+    fill: red;
+  }
+
+  .state-borders {
+    fill: none;
+    stroke: black;
+    stroke-width: 0.5px;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+    pointer-events: none;
+  }
+&lt;/style&gt;
+
+&lt;script src="node_modules/topojson-client/dist/topojson-client.min.js"&gt;&lt;/script&gt;
+&lt;svg id="svg2" style="background-color:lightblue" width="960" height="600"&gt;&lt;/svg&gt;
+
+&lt;script&gt;
+d3.json('data/counties-albers-10m.json').then(us => {
+  var svg = d3.select('#svg2');
+  var path = d3.geoPath();
+
+  svg.append('g')
+    .attr('class', 'states')
+    .selectAll('path')
+    .data(topojson.feature(us, us.objects.states).features) //convert to GeoJSON features
+    .enter()
+    .append('path')
+    .attr('d', path);
+
+  svg.append('path')  //state boundaries
+    .attr('class', 'state-borders')
+    .attr('d', path(topojson.mesh(us, us.objects.states, (a, b) => a !== b)));  //generate mesh for edges that are shared by multiple features
+});
+&lt;/script&gt;</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-3">
+    <style>
+      .states {
+        fill: whitesmoke;
+      }
+
+      .states :hover {
+        fill: red;
+      }
+
+      .state-borders {
+        fill: none;
+        stroke: black;
+        stroke-width: 0.5px;
+        stroke-linejoin: round;
+        stroke-linecap: round;
+        pointer-events: none;
+      }
+    </style>
+
+    <script src="node_modules/topojson-client/dist/topojson-client.min.js"></script>
+    <svg id="svg2" style="background-color:lightblue" width="960" height="600"></svg>
+
+    <script>
+      d3.json('data/counties-albers-10m.json').then(us => {
+        var svg = d3.select('#svg2');
+        var path = d3.geoPath();
+
+        svg.append('g')
+          .attr('class', 'states')
+          .selectAll('path')
+          .data(topojson.feature(us, us.objects.states).features) //convert to GeoJSON features
+          .enter()
+          .append('path')
+          .attr('d', path);
+
+        svg.append('path')  //state boundaries
+          .attr('class', 'state-borders')
+          .attr('d', path(topojson.mesh(us, us.objects.states, (a, b) => a !== b)));  //generate mesh for edges that are shared by multiple features
+      });
+    </script>
+  </div>
+
+  <h2>World map</h2>
+
+  <p>The TopoJSON file <a href="https://github.com/topojson/world-atlas#countries-10m.json">countries-10m.json</a> is
+    downloaded from <a target="_blank" href="https://github.com/topojson/us-atlas">U.S. Atlas TopoJSON</a> and contains
+    the geometry collections countries and land. <mark>The geometry is quantized, but not projected.</mark> The D3 code is adapted from <a target="_blank" href="https://bl.ocks.org/mbostock/4090848">Block
+      4090848</a>. <mark>See <a href="https://observablehq.com/@d3/world-map-svg">World Map (SVG)</a> for selecting the projection.</mark></p>
+
+  <p><b>Notes:</b> We have to filter out the feature corresponding to the Maldives (id='462') that is taking the whole SVG. We can filter out Antartica in the same way</p>
+
+  <div class="mt-2 accordion mb-2" id="accordionTwo">
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingTwo">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo"
+          aria-expanded="false" aria-controls="collapseTwo">
+          Source code
+        </button>
+      </h2>
+      <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
+        data-bs-parent="#accordionTwo">
+        <div class="accordion-body">
+          <pre><code class="HTML" data-trim data-noescape>&lt;style&gt;
+.states {
+  fill: whitesmoke;
+}
+
+.states :hover {
+  fill: red;
+}
+
+.state-borders {
+  fill: none;
+  stroke: black;
+  stroke-width: 0.5px;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  pointer-events: none;
+}
+&lt;/style&gt;
+
+&lt;script src="node_modules/topojson-client/dist/topojson-client.min.js"&gt;&lt;/script&gt;
+&lt;svg id="svg2" style="background-color:lightblue" width="960" height="600"&gt;&lt;/svg&gt;
+
+&lt;script&gt;
+d3.json('data/counties-albers-10m.json').then(us => {
+var svg = d3.select('#svg2');
+var path = d3.geoPath();
+
+svg.append('g')
+  .attr('class', 'states')
+  .selectAll('path')
+  .data(topojson.feature(us, us.objects.states).features) //convert to GeoJSON features
+  .enter()
+  .append('path')
+  .attr('d', path);
+
+svg.append('path')  //state boundaries
+  .attr('class', 'state-borders')
+  .attr('d', path(topojson.mesh(us, us.objects.states, (a, b) => a !== b)));  //generate mesh for edges that are shared by multiple features
+});
+&lt;/script&gt;</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-3">
+    <style>
+      .countries {
+        fill: whitesmoke;
+      }
+
+      .countries:hover {
+        fill: red;
+      }
+
+      .countries-borders {
+        fill: none;
+        stroke: black;
+        stroke-width: 0.5px;
+        stroke-linejoin: round;
+        stroke-linecap: round;
+        pointer-events: none;
+      }
+    </style>
+
+    <script src="node_modules/topojson-client/dist/topojson-client.min.js"></script>
+    <svg id="svg3" style="background-color:lightblue" width="960" height="600"></svg>
+
+    <script>
+    d3.json('data/countries-10m.json').then(world => {
+        var svg = d3.select('#svg3');
+
+        var feature = topojson.feature(world, world.objects.countries);
+        feature.features = feature.features.filter(d => d.id != '462'); //filter out Maldives (id=462)
+
+        var projection = d3.geoEquirectangular().fitSize([960, 600], feature);
+        var path = d3.geoPath().projection(projection);
+
+        svg.append('g')
+          .selectAll('path')
+          .data(feature.features)
+          .enter()
+          .append('path')
+          .attr('d', path)
+          .attr('class', 'countries')
+          .attr('id', d => `${d.properties.name} (id='${d.id}'')`);
+
+        svg.append('path') // countries boundaries
+          .attr('class', 'countries-borders')
+          .attr('d', path(topojson.mesh(world, world.objects.countries, (a, b) => a !== b)));
+      });
+    </script>
+  </div>
+
+  <div class="mt-3 text-end"><a href="#"><i class="bi bi-arrow-up"></i> top</a></div>
+
+</body>
+
+</html>

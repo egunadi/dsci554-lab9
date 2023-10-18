@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>DSCI 554 Lab</title>
+
+  <link href="./node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <script src="./node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+  <link rel="stylesheet" href="./style.css">
+
+  <link href="node_modules/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="./github-dark-dimmed.min.css">
+  <script src="./highlight.min.js"></script>
+
+  <script src="./node_modules/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+  <link rel="stylesheet" href="./node_modules/highlightjs-copy/dist/highlightjs-copy.min.css" />
+
+  <script>
+    hljs.highlightAll();
+    hljs.addPlugin(new CopyButtonPlugin());
+  </script>
+
+  <script src="node_modules/d3/dist/d3.min.js"></script>
+
+</head>
+
+<body>
+  <h1>🧪 GeoJSON and TopoJSON</h1>
+
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="index.html">Index</a></li>
+      <li class="breadcrumb-item active" aria-current="page">🧪 GeoJSON and TopoJSON</li>
+    </ol>
+  </nav>
+
+  <p>We are going to see how to create TopoJSON files from GeoJSON files, how to create projected GeoJSON and TopoJSON
+    and compare file sizes.</p>
+
+  <h2>GeoJSON</h2>
+
+  <div>We start with <a target="_blank"
+      href="data/Countywide_Statistical_Area-OGRE.geojson">Countywide_Statistical_Area-OGRE.geojson</a> GeoJSON file</a>
+  </div>
+
+  <div class="mt-2 accordion mb-2" id="accordionOne">
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingOne">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
+          aria-expanded="false" aria-controls="collapseOne">
+          Source code
+        </button>
+      </h2>
+      <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne"
+        data-bs-parent="#accordionOne">
+        <div class="accordion-body">
+          <pre><code class="HTML" data-trim data-noescape>&lt;style&gt;
+  .cities {
+    fill: whitesmoke;
+    stroke: #666;
+    stroke-width: 0.5px;
+  }
+&lt;/style&gt;
+
+&lt;svg id="svg1" width="300" height="300" style="background-color: #eee"&gt;&lt;/svg&gt;
+
+&lt;script type="text/javascript"&gt;
+  d3.json('data/QGIS.geojson').then(json =&gt; {
+
+    var svg = d3.select('#svg1'),
+      width = +svg.attr('width'),
+      height = +svg.attr('height');
+
+    var projection = d3.geoMercator()
+      .fitSize([width, height], json);
+
+    path = d3.geoPath()
+      .projection(projection);
+
+    svg.append('g')
+      .attr('class', 'cities')
+      .selectAll('path')
+      .data(json.features)
+      .enter()
+      .append('path')
+      .attr('d', path);
+  });
+&lt;/script&gt;</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-3 mb-3">
+    <style>
+      .cities {
+        fill: whitesmoke;
+        stroke: #666;
+        stroke-width: 0.5px;
+      }
+    </style>
+
+    <svg id="svg1" width="300" height="300" style="background-color: #eee"></svg>
+
+    <script type="text/javascript">
+      d3.json('data/Countywide_Statistical_area-OGRE.geojson').then(json => {
+
+        var svg = d3.select('#svg1'),
+          width = +svg.attr('width'),
+          height = +svg.attr('height');
+
+        var projection = d3.geoMercator()
+          .fitSize([width, height], json);
+
+        path = d3.geoPath()
+          .projection(projection);
+
+        svg.append('g')
+          .attr('class', 'cities')
+          .selectAll('path')
+          .data(json.features)
+          .enter()
+          .append('path')
+          .attr('d', path);
+      });
+    </script>
+  </div>
+
+  <h2>Projected GeoJSON</h2>
+
+  <div><code>geoproject</code> is a node command line tool included in <a target="_blank"
+      href="https://github.com/d3/d3-geo-projection">d3-geo-projection</a> that you can use to process
+    transform GeoJSON, such as to project from spherical to planar coordinates. You can use geoproject to project
+    GeoJSON coordinates. The following command projects geographical coordinates to planar coordinates and poutputs a
+    projected GeoJSON file.</div>
+
+  <pre><code class="sh">./node_modules/d3-geo-projection/bin/geoproject.js 'd3.geoMercator().fitSize([300, 300], d)' &lt; data/Countywide_Statistical_Area-OGRE.geojson &gt; data/Countywide_Statistical_Area-OGRE-PROJECTED.geojson</code></pre>
+
+  <p>The following code shows uses D3 to render <a target="_blank"
+      href="data/Countywide_Statistical_Area-OGRE-PROJECTED.geojson">Countywide_Statistical_Area-OGRE-PROJECTED.geojson</a>
+    file.</p>
+
+  <div class="mt-2 accordion mb-2" id="accordionTwo">
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingTwo">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo"
+          aria-expanded="false" aria-controls="collapseTwo">
+          Code
+        </button>
+      </h2>
+      <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
+        data-bs-parent="#accordionTwo">
+        <div class="accordion-body">
+          <pre><code class="HTML" data-trim data-noescape>&lt;script&gt;
+d3.json('data/Countywide_Statistical_Area-OGRE-PROJECTED.geojson').then(json => {
+  var svg = d3.select('#svg2'),
+    width = +svg.attr('width'),
+    height = +svg.attr('height');
+
+  path = d3.geoPath();
+
+  svg.append('g')
+    .attr('class', 'cities')
+    .selectAll("path")
+    .data(json.features)
+    .enter()
+    .append('path')
+    .attr('d', path);
+  });
+&lt;/script&gt;</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-3 mb-3">
+    <svg id="svg2" width="300" height="300" style="background-color: #eee"></svg>
+
+    <script>
+      d3.json('data/Countywide_Statistical_Area-OGRE-PROJECTED.geojson').then(json => {
+        var svg = d3.select('#svg2'),
+          width = +svg.attr('width'),
+          height = +svg.attr('height');
+
+        path = d3.geoPath();
+
+        svg.append('g')
+          .attr('class', 'cities')
+          .selectAll("path")
+          .data(json.features)
+          .enter()
+          .append('path')
+          .attr('d', path);
+      });
+    </script>
+  </div>
+
+  <h2>TopoJSON</h2>
+
+  <p><a href="https://github.com/topojson/topojson">TopoJSON</a> is a format for encoding geographic data structures
+    that
+    aims to provide a more compact representation of geographical features compared to traditional GeoJSON or Shapefile
+    formats. There are several benefits of using TopoJSON when plotting maps.</p>
+  </p>
+
+  <p>To convert GeoJSON to TopoJSON you can use <a target="_blank"
+      href="https://github.com/topojson/topojson-server">TopoJSON Server</a> module. The
+    <a target="_blank" href="https://github.com/topojson/topojson-server#geo2topo">geo2topo</a> command line tool
+    transforms GeoJSON to TopoJSON:</div>
+
+  <pre><code class="sh">./node_modules/topojson-server/bin/geo2topo data/Countywide_Statistical_Area-OGRE.geojson -o data/Countywide_Statistical_Area-OGRE.topojson.json</code></pre>
+
+  <p>The following code shows uses D3 to render <a target="_blank"
+      href="data/Countywide_Statistical_Area-OGRE.topojson.json">Countywide_Statistical_Area-OGRE.topojson.json</a>
+    file.
+  </p>
+
+  <p><a target="_blank"
+      href="https://github.com/topojson/topojson-client/blob/master/README.md#feature">topojson.feature()</a> returns
+    the GeoJSON Feature or FeatureCollection for the specified object in the given topology. This is useful to extract
+    the GeoJSON Feature or FeatureCollection from the TopoJSON.
+  </p>
+  <p>
+    <a target="_blank" href="https://github.com/topojson/topojson-client/blob/master/README.md#mesh">topojson.mesh()</a>
+    returns the GeoJSON MultiLineString geometry object representing the mesh for the specified object in the given
+    topology. This is useful for rendering strokes in complicated objects efficiently, as edges that are shared by
+    multiple features are only stroked once.
+  </p>
+
+  <div class="mt-2 accordion mb-2" id="accordionThree">
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingThree">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+          data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+          Source code
+        </button>
+      </h2>
+      <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree"
+        data-bs-parent="#accordionThree">
+        <div class="accordion-body">
+          <pre><code class="HTML" data-trim data-noescape>&lt;script&gt;
+d3.json('data/Countywide_Statistical_Area-OGRE.topojson.json').then(json => {
+  json = topojson.feature(json, json.objects["Countywide_Statistical_Area-OGRE"]); //see data/Countywide_Statistical_Area-OGRE.topojson.json
+
+  var svg = d3.select('#svg3'),
+    width = +svg.attr('width'),
+    height = +svg.attr('height');
+
+  var projection = d3.geoMercator()
+    .fitSize([width, height], json);
+
+  path = d3.geoPath()
+    .projection(projection);
+
+  svg.append('g')
+    .attr('class', 'cities')
+    .selectAll("path")
+    .data(json.features)
+    .enter()
+    .append('path')
+    .attr('d', path);
+});
+&lt;/script&gt;</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-3 mb-3">
+    <script src="./node_modules/topojson-client/dist/topojson-client.min.js"></script>
+
+    <svg id="svg3" width="300" height="300" style="background-color: #eee"></svg>
+
+    <script>
+      d3.json('data/Countywide_Statistical_Area-OGRE.topojson.json').then(json => {
+        json = topojson.feature(json, json.objects["Countywide_Statistical_Area-OGRE"]); //see data/Countywide_Statistical_Area-OGRE.topojson.json
+
+        var svg = d3.select('#svg3'),
+          width = +svg.attr('width'),
+          height = +svg.attr('height');
+
+        var projection = d3.geoMercator()
+          .fitSize([width, height], json);
+
+        path = d3.geoPath()
+          .projection(projection);
+
+        svg.append('g')
+          .attr('class', 'cities')
+          .selectAll("path")
+          .data(json.features)
+          .enter()
+          .append('path')
+          .attr('d', path);
+      });
+    </script>
+  </div>
+
+  <h2>Projected TopoJSON</h2>
+
+  <p>TopoJSON can also be used with projected coordinates not to have to perform projection operations when plotting
+    with D3. When projected coordinates are used the path
+    generator projection does not need to be set, defaulting to identity.</p>
+
+  <p>To generate projected TopoJSON we simply convert projected GeoJSON using the <a target="_blank"
+      href="https://github.com/topojson/topojson-server#geo2topo">geo2topo</a> command line:</p>
+
+  <pre><code class="sh">./node_modules/topojson-server/bin/geo2topo data/Countywide_Statistical_Area-OGRE-PROJECTED.geojson -o data/Countywide_Statistical_Area-OGRE-PROJECTED.topojson.json</code></pre>
+
+  <p>The following code shows uses D3 to render <a target="_blank"
+      href="data/Countywide_Statistical_Area-OGRE-PROJECTED.topojson.json">Countywide_Statistical_Area-OGRE-PROJECTED.topojson.json</a>
+    file.</p>
+
+
+  <div class="mt-2 accordion mb-2" id="accordionThree">
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingThree">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+          data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+          Source code
+        </button>
+      </h2>
+      <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree"
+        data-bs-parent="#accordionThree">
+        <div class="accordion-body">
+          <pre><code class="HTML" data-trim data-noescape>&lt;script&gt;
+  d3.json('data/Countywide_Statistical_Area-OGRE-PROJECTED.topojson.json').then(json => {
+    json = topojson.feature(json, json.objects["Countywide_Statistical_Area-OGRE-PROJECTED"]);
+        
+    var svg = d3.select('#svg3'),
+      width = +svg.attr('width'),
+      height = +svg.attr('height');
+  
+    var projection = d3.geoMercator()
+      .fitSize([width, height], json);
+  
+    path = d3.geoPath()
+      .projection(projection);
+  
+    svg.append('g')
+      .attr('class', 'cities')
+      .selectAll("path")
+      .data(json.features)
+      .enter()
+      .append('path')
+      .attr('d', path);
+  });
+  &lt;/script&gt;</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-3 mb-3">
+    <svg id="svg4" width="300" height="300" style="background-color: #eee"></svg>
+
+    <script>
+      d3.json('data/Countywide_Statistical_Area-OGRE-PROJECTED.topojson.json').then(json => {
+        json = topojson.feature(json, json.objects["Countywide_Statistical_Area-OGRE-PROJECTED"]);
+
+        var svg = d3.select('#svg4'),
+          width = +svg.attr('width'),
+          height = +svg.attr('height');
+
+        path = d3.geoPath();
+
+        svg.append('g')
+          .attr('class', 'cities')
+          .selectAll("path")
+          .data(json.features)
+          .enter()
+          .append('path')
+          .attr('d', path);
+      });
+    </script>
+  </div>
+
+  <h2>File size comparison</h2>
+
+  <div>Here is a comparison of the file sizes for the different files we created:</div>
+
+  <div class="p-3 mb-3">
+    <table class="table table-striped text-end">
+      <tr>
+        <th>File</th>
+        <th>Size (M)</th>
+        <th>% Relative size (resp. to GeoJSON)</th>
+      </tr>
+      <tr>
+        <td>GeoJSON</td>
+        <td>
+          10.0
+        </td>
+        <td>
+          100
+        </td>
+      </tr>
+      <tr>
+        <td>Projected GeoJSON</td>
+        <td>
+          11.0
+        </td>
+        <td>
+          110
+        </td>
+      </tr>
+      <tr>
+        <td>TopoJSON</td>
+        <td>
+          6.7
+        </td>
+        <td>
+          67
+        </td>
+      </tr>
+      <tr>
+        <td>Projected TopoJSON</td>
+        <td>
+          7.2
+        </td>
+        <td>
+          72
+        </td>
+      </tr>
+    </table>
+
+  </div>
+
+  <div class="mt-3 text-end"><a href="#"><i class="bi bi-arrow-up"></i> top</a></div>
+
+</body>
+
+</html>

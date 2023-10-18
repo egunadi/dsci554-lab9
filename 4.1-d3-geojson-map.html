@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>DSCI 554 Lab</title>
+
+  <link href="./node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <script src="./node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+  <link rel="stylesheet" href="./style.css">
+
+  <link href="node_modules/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="./github-dark-dimmed.min.css">
+  <script src="./highlight.min.js"></script>
+
+  <script src="./node_modules/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+  <link rel="stylesheet" href="./node_modules/highlightjs-copy/dist/highlightjs-copy.min.css" />
+
+  <script>
+    hljs.highlightAll();
+    hljs.addPlugin(new CopyButtonPlugin());
+  </script>
+
+  <script src="./node_modules/d3/dist/d3.min.js"></script>
+  <script src="./node_modules/d3-color/dist/d3-color.min.js"></script>
+
+</head>
+
+<body>
+  <h1>🧪 D3 GeoJSON map</h1>
+
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="index.html">Index</a></li>
+      <li class="breadcrumb-item active" aria-current="page">🧪 D3 GeoJSON map</li>
+    </ol>
+  </nav>
+    
+  <h2>Alabama</h2>
+
+  <p>We will create a map of Alabama showing the capital city Montgomery. Alabama boundaries are from <a target="_blank" href="data/us.json">us.json</a> which contains state boundaries for the US
+    states. We use search for <a target="_blank" href="https://www.google.com/maps/place/Montgomery,+AL/@32.3436918,-86.4108459,11z/data=!4m6!3m5!1s0x888e8194b0d481f9:0x8e1b511d354285ff!8m2!3d32.3792233!4d-86.3077368!16zL20vMGZ0dGc?entry=ttu">Montgomery in Google Maps</a> to locate Montgomery and display on the map with a dot and a name.</p>
+
+  <div class="mt-2 accordion mb-2" id="accordionTwo">
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingTwo">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo"
+          aria-expanded="false" aria-controls="collapseTwo">
+          Source code
+        </button>
+      </h2>
+      <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
+        data-bs-parent="#accordionTwo">
+        <div class="accordion-body">
+          <pre><code class="HTML" data-trim data-noescape>&lt;svg id="alabama-map-0" width="600" height="400" style="background-color: #eee"&gt;&lt;/svg&gt;
+
+&lt;script&gt;
+d3.json('data/us.json').then(json => {
+
+  var svg = d3.select('#alabama-map-0'),
+    width = +svg.attr('width'),
+    height = +svg.attr('height');
+
+  var index = 0;  //index of Alabama in FeatureCollection features
+  var capitalLonLat = [-86.265273, 32.358223];  //Montgomery lon, lat
+  var colors = { fg: d3.color('white'), bg: d3.color('crimson') };  //https://en.wikipedia.org/wiki/List_of_U.S._state_colors#Alabama
+
+  //manual set-up
+  // var projection = d3.geoAlbersUsa()  //see https://d3js.org/d3-geo/conic#geoAlbersUsa
+  //   .translate([width * 0.5, height * 0.5])
+  //   .scale([1200]);
+
+  //set-up using fitSize
+  var projection = d3.geoAlbersUsa()
+    .fitSize([width, height], json.features[index]);
+
+  //project Alabama feature geometry coordinates
+  json.features[index].geometry.coordinates[0].forEach(d => projection(d));
+
+  //create path generator and configure it with the projection see https://github.com/d3/d3-geo#geoPath
+  var path = d3.geoPath().projection(projection);
+
+  //create path generator and configure it with the projection see https://github.com/d3/d3-geo#geoPath
+  var path = d3.geoPath().projection(projection);
+
+  //project Alabama feature
+  var d = path(json.features[index]);
+
+  //append projected path setting 'fill', 'stroke' and 'd'
+  svg.append('path')
+    .attr('fill', colors.bg)
+    .attr('stroke', colors.bg.darker())
+    .attr('d', d);
+
+  //append circle and text for Montgomery
+  svg.append('circle')
+    .attr('fill', colors.fg)
+    .attr('stroke', colors.fg.darker())
+    .attr('cx', capital[0])
+    .attr('cy', capital[1])
+    .attr('r', 5);
+
+  svg.append('text')
+    .attr('fill', colors.fg)
+    .attr('x', capital[0] - 40)
+    .attr('y', capital[1] - 15)
+    .text('Montgomery');
+
+});
+&lt;/script&gt;</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-3">
+    <svg id="alabama-map-0" width="600" height="400" style="background-color: #eee"></svg>
+
+    <script>
+      d3.json('data/us.json').then(json => {
+
+        var svg = d3.select('#alabama-map-0'),
+          width = +svg.attr('width'),
+          height = +svg.attr('height');
+
+        var index = 0;  //index of Alabama in FeatureCollection features
+        var capitalLonLat = [-86.265273, 32.358223];  //Montgomery lon, lat
+        var colors = { fg: d3.color('white'), bg: d3.color('crimson') };  //https://en.wikipedia.org/wiki/List_of_U.S._state_colors#Alabama
+
+        //manual set-up
+        // var projection = d3.geoAlbersUsa()  //see https://d3js.org/d3-geo/conic#geoAlbersUsa
+        //   .translate([width * 0.5, height * 0.5])
+        //   .scale([1200]);
+
+        //set-up using fitSize
+        var projection = d3.geoAlbersUsa()
+          .fitSize([width, height], json.features[index]);
+
+        //project Montgomery
+        var capital = projection(capitalLonLat);
+
+        //project Alabama feature geometry coordinates
+        json.features[index].geometry.coordinates[0].forEach(d => projection(d));
+
+        //create path generator and configure it with the projection see https://github.com/d3/d3-geo#geoPath
+        var path = d3.geoPath().projection(projection);
+
+        //project Alabama feature
+        var d = path(json.features[index]);
+
+        //append projected path setting 'fill', 'stroke' and 'd'
+        svg.append('path')
+          .attr('fill', colors.bg)
+          .attr('stroke', colors.bg.darker())
+          .attr('d', d);
+
+        //append circle and text for Montgomery
+        svg.append('circle')
+          .attr('fill', colors.fg)
+          .attr('stroke', colors.fg.darker())
+          .attr('cx', capital[0])
+          .attr('cy', capital[1])
+          .attr('r', 5);
+
+        svg.append('text')
+          .attr('fill', colors.fg)
+          .attr('x', capital[0] - 40)
+          .attr('y', capital[1] - 15)
+          .text('Montgomery');
+      });</script>
+  </div>
+
+  <h2>US</h2>
+
+  <p>In the following we create a map of the US, highlight California and setting a marker for Sacramento.</p>
+
+  <div class="mt-2 accordion mb-2" id="accordionOne">
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingOne">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
+          aria-expanded="false" aria-controls="collapseOne">
+          Source code
+        </button>
+      </h2>
+      <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne"
+        data-bs-parent="#accordionOne">
+        <div class="accordion-body">
+          <pre><code class="HTML" data-trim data-noescape>&lt;style&gt;
+  .graticule {
+    fill: none;
+    stroke: grey;
+    stroke-width: .3px;
+    stroke-opacity: 0.5;
+  }
+
+  .states {
+    stroke: black;
+    stroke-width: .3px;
+  }
+&lt;/style&gt;
+
+&lt;svg id="us-map" width="600" height="400" style="background-color: #eee"&gt;&lt;/svg&gt;
+
+&lt;script type="text/javascript"&gt;
+d3.json('data/us.json').then(json =&gt; {
+
+  var svg = d3.select('#us-map'),
+    width = +svg.attr('width'),
+    height = +svg.attr('height');
+
+  var projection = d3.geoAlbersUsa()
+    .fitSize([width, height], json);
+
+  var path = d3.geoPath().projection(projection);  //create a path generator configured with the projection: https://github.com/d3/d3-geo#geoPath
+
+  var graticule = d3.geoGraticule()  //create and configure a graticule generator
+    .step([10, 10]);
+
+  svg.append('path')
+    .datum(graticule)  //data join with the graticule path
+    .attr('class', 'graticule')
+    .attr('d', path);
+
+  svg.selectAll('.states')
+    .data(json.features)  //data join with features (states)
+    .enter()
+    .append('path')
+    .attr('fill', d =&gt; 'white')  //draw states in white
+    .attr('class', 'states')
+    .attr('d', path);
+});
+&lt;/script&gt;</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-3">
+    <style>
+      .graticule {
+        fill: none;
+        stroke: grey;
+        stroke-width: .3px;
+        stroke-opacity: 0.5;
+      }
+
+      .states {
+        stroke: black;
+        stroke-width: .3px;
+      }
+    </style>
+
+    <svg id="us-map" width="600" height="400" style="background-color: #eee"></svg>
+
+    <script type="text/javascript">
+      d3.json('data/us.json').then(json => {  // load us geojson
+
+        var svg = d3.select('#us-map'),
+          width = +svg.attr('width'),
+          height = +svg.attr('height');
+
+        var projection = d3.geoAlbersUsa()
+          .fitSize([width, height], json);
+
+        var path = d3.geoPath().projection(projection);  // create a path generator and configure it using the AlbersUSA projection (us.json is not projected!) see https://github.com/d3/d3-geo#geoPath
+
+        var graticule = d3.geoGraticule()  // create and configure a graticule generator
+          .step([10, 10]);
+
+        svg.append('path')
+          .datum(graticule)  // data join of the graticule path
+          .attr('class', 'graticule')
+          .attr('d', path);
+
+        svg.selectAll('.states')
+          .data(json.features)  // data join with features (states)
+          .enter()
+          .append('path')
+          .attr('fill', d => d.id == '06' ? 'gold' : 'white')
+          .attr('stroke', d => d.id == '06' ? 'blue' : 'grey')
+          .attr('stroke-width', d => d.id == '06' ? .6 : .3)
+          //.attr('class', 'states')
+          .attr('d', path);
+
+        var capital = projection([-121.467639, 38.572925]);
+        svg.append('circle')
+          .attr('fill', 'blue')
+          .attr('cx', capital[0])
+          .attr('cy', capital[1])
+          .attr('r', 2);
+
+        svg.append('text')
+          .attr('fill', 'blue')
+          .attr('font-size', '.55em')
+          .attr('x', capital[0] - 15)
+          .attr('y', capital[1] - 5)
+          .text('Sacramento');
+      });
+    </script>
+  </div>
+
+  <div class="mt-3 text-end"><a href="#"><i class="bi bi-arrow-up"></i> top</a></div>
+</body>
+
+</html>

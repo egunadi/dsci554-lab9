@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>DSCI 554 Lab</title>
+
+  <link href="./node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <script src="./node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+  <link rel="stylesheet" href="./style.css">
+
+  <link href="node_modules/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="./github-dark-dimmed.min.css">
+  <script src="./highlight.min.js"></script>
+
+  <script src="./node_modules/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+  <link rel="stylesheet" href="./node_modules/highlightjs-copy/dist/highlightjs-copy.min.css" />
+
+  <script>
+    hljs.highlightAll();
+    hljs.addPlugin(new CopyButtonPlugin());
+  </script>
+</head>
+
+<body>
+  <h1>🧪 Obtaining GeoJSON</h1>
+
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="index.html">Index</a></li>
+      <li class="breadcrumb-item active" aria-current="page">🧪 GeoJSON data from a public data source</li>
+    </ol>
+  </nav>
+
+  <p>Most public data sources will provide spatial data in GeoJSON format. In the following we are going to see how to download GeoJSON for building footprints from the <a href="href="https://geohub.lacity.org">Los Angeles GeoHub portal</a>.</p>
+
+  <h2>Building Footprints from Los Angeles GeoHub</h2>
+
+  <ol>
+    <li>Go to <a target="_blank"
+        href="https://geohub.lacity.org/datasets/building-footprints/data?geometry=-118.299%2C34.018%2C-118.269%2C34.024&orderBy=BLD_ID&orderByAsc=false&where=BLD_ID">Los
+        Angeles GeoHub Building Footprints</a>
+    </li>
+    <li>Click <kbd>Close Table</kbd>, zoom in in the map, select a footprint to download and write down the BLD_ID.
+      <div class="my-2"><img width="450" src="picts/footprints1.png" /></div>
+    </li>
+    <li>Click the <i class="bi bi-funnel"></i> icon and filter for your BLD_ID as shown in the figure.
+      <div class="my-2"><img width="450" src="picts/filter.png" /></div>
+    </li>
+    <li>Click the <i class="bi bi-cloud-download"></i> icon, toggle <kbd>Toggle Filters</kbd>, and click Download GeoJSON.
+      <div class="my-2"><img width="450" src="picts/download-filtered.png" /></div>
+    </li>
+  </ol>
+
+  <p>To download all the buildings footprints in an area, you can use the <kbd>Draw an area</kbd> tool to define the area, then
+    filter footprints with <kbd>Filter to this area</kbd>.</p>
+  
+  <div class="mx-2"><img width="450" src="picts/download-filtered.png" /></div>
+
+  The following <a target="_blank" href="./data/Building_Footprints.geojson">Building_Footprints.geojson</a> is an example of such GeoJSON file downloaded from the Los Angeles GeoHub.
+
+  <h2 class="mt-3">Los Angeles neighborhoods from Los Angeles Data</h2>
+
+  <ol>
+    <li>Go to <a target="_blank" href="https://data.lacity.org/">Los Angeles data.lacity</a> and search for <kbd>neighborhoods</kbd></li>
+    <li>Click the entry labeled <a href="https://data.lacity.org/A-Well-Run-City/Neighborhoods/ykhe-zspy">Neighborhoods</a> select <kbd>Export</kbd>, click GeoJSON in the menu. You will be prompted to download a file named <a target="_blank" href="./data/Neighborhoods.geojson">Neighborhoods.geojson</a>.</div>
+    </li>
+  </ol>
+
+  <h2 class="mt-3">GeoJSON from Los Angeles GeoHub API</h2>
+
+  Alternatively you can use the API provided by the Los Angeles GeoHub to download GeoJSON data. This is useful if you want to download a large amount of data, or if you want to automate the download process. For the building footprints data, these are the steps to follow:
+
+  <ol>
+    <li>In the <a href="https://geohub.lacity.org/datasets/building-footprints/explore?location=34.018012%2C-118.410168%2C10.89">Building Footprints Summary</a> accessible by clicking the <i class="bi bi-info-circle"></i> icon, click <kbd>I want to use this</kbd> button at the bottom left of the page and select <kbd>View API Resources</kbd></li>
+    <li>The GeoJSON URL provides you with the URL of the api and <a href="https://geohub.lacity.org/datasets/building-footprints/api">Open API Explorer</a> lets you configure your API queries with a dialog. For example you can click the <kbd>+</kbd> button to filter footprints by ID as shown in the picture below. The URL in the <i>Query URL</i> box can be used in the Browser, or with <code>d3.json</code>
+    <div class="my-2">
+        <img width="450" src="picts/footprint_api.png" />
+      </div>
+    </li>
+  </ol>
+
+  <div class="mt-3 text-end"><a href="#"><i class="bi bi-arrow-up"></i> top</a></div>
+</body>
+
+</html>

@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>DSCI 554 🧪 Lab</title>
+
+  <link href="./node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <script src="./node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+  <link rel="stylesheet" href="./style.css">
+
+  <link href="node_modules/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="./github-dark-dimmed.min.css">
+  <script src="./highlight.min.js"></script>
+
+  <script src="./node_modules/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+  <link rel="stylesheet" href="./node_modules/highlightjs-copy/dist/highlightjs-copy.min.css" />
+
+  <script>
+    hljs.highlightAll();
+    hljs.addPlugin(new CopyButtonPlugin());
+  </script>
+
+  <script src="./node_modules/d3/dist/d3.min.js"></script>
+
+</head>
+
+<body>
+  <h1>🧪 Filtering GeoJSON</h1>
+
+  <p>Often times you can filter features by editing the GeoJSON files in VSCode. In the following we show how to filter GeoJSON features using a GIS tool and programmatically.</p>
+
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="index.html">Index</a></li>
+      <li class="breadcrumb-item active" aria-current="page">🧪 Working with GeoJSON</li>
+    </ol>
+  </nav>
+
+  <h2 class="mt-3">Filtering with a GIS tool</h2>
+
+  <div>In the following we use <a target="_blank" href="https://geojson.io">https://geojson.io</a> to remove the geometry for the islands:
+    <ul>
+      <li>Go to <a target="_blank" href="https://geojson.io">https://geojson.io</a></li>
+      <li>Click New</li>
+      <li>Click Open and select <a target="_blank" href="data/Countywide_Statistical_Area-OGRE.geojson">Countywide_Statistical_Area-OGRE.geojson</a> (you can find the file in the data folder).</li>
+      <li>Click the islands and click <kbd>Delete feature</kbd> in the popup as shown in the figure
+        <div class="m-2"><img width="250px" src="picts/delete-feature.png" alt=""></div>
+      </li>
+      <li>Click <kbd>Save</kbd> and choose GeoJSON. <a href="data/map.geojson">map.geojson</a> is generated and downloaded.</li>
+    </ul>
+  </div>
+    
+  <p>The following is the resulting map showing the filtered geometries in <a href="data/map.geojson">map.geojson</a>.</p>
+
+  <div class="mt-2 accordion mb-2" id="accordionOne">
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingOne">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
+          aria-expanded="false" aria-controls="collapseOne">
+          Source code
+        </button>
+      </h2>
+      <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne"
+        data-bs-parent="#accordionOne">
+        <div class="accordion-body">
+          <pre><code class="HTML" data-trim data-noescape>&lt;style&gt;
+  .cities {
+    fill: whitesmoke;
+    stroke: #666;
+    stroke-width: 0.5px;
+  }
+&lt;/style&gt;
+
+&lt;div&gt;&lt;small&gt;Mouse over the map to display features properties&lt;/small&gt;&lt;/div&gt;
+
+&lt;div class="container"&gt;
+  &lt;div class="row"&gt;
+    &lt;div class="col"&gt;
+      &lt;svg id="svg1" width="300" height="300" style="background-color: #eee"&gt;&lt;/svg&gt;
+    &lt;/div&gt;
+    &lt;div class="col"&gt;
+      &lt;div class="alert alert-info" id="info1"&gt;&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+d3.json('data/map.geojson').then(json => {
+  var svg = d3.select('#svg3'),
+    width = +svg.attr('width'),
+    height = +svg.attr('height');
+
+  var projection = d3.geoMercator()
+    .fitSize([width, height], json);
+
+  path = d3.geoPath()
+    .projection(projection);
+
+  svg.append('g')
+    .attr('class', 'cities')
+    .selectAll('path')
+    .data(json.features)
+    .enter()
+    .append('path')
+    .attr('d', path);
+});
+&lt;/script&gt;</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-3">
+    <style>
+      .cities {
+        fill: whitesmoke;
+        stroke: #666;
+        stroke-width: 0.5px;
+      }
+    </style>
+
+    <svg id="svg3" width="300" height="300" style="background-color: #eee"></svg>
+
+    <script>
+      d3.json('data/map.geojson').then(json => {
+        var svg = d3.select('#svg3'),
+          width = +svg.attr('width'),
+          height = +svg.attr('height');
+  
+        var projection = d3.geoMercator()
+          .fitSize([width, height], json);
+  
+        path = d3.geoPath()
+          .projection(projection);
+  
+        svg.append('g')
+          .attr('class', 'cities')
+          .selectAll('path')
+          .data(json.features)
+          .enter()
+          .append('path')
+          .attr('d', path);
+      });
+    </script>
+  </div>
+
+  <h2>Filtering programmatically</h2>
+
+  <p>We wish to remove the islands from the map of the Los Angeles County Countywide Statistical Area boundaries map. For this we first find an ID we can use to uniquely identify the islands in the GeoJSON features and then filter the GoeJSON using <code>array.filter</code>. The interactive map below lets us find the ID to use for filtering.
+  </div>
+
+  <div class="mt-2 accordion mb-2" id="accordionOne">
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingOne">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
+          aria-expanded="false" aria-controls="collapseOne">
+          Source code
+        </button>
+      </h2>
+      <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne"
+        data-bs-parent="#accordionOne">
+        <div class="accordion-body">
+          <pre><code class="HTML" data-trim data-noescape>&lt;style&gt;
+  .selected {
+    fill: red;
+  }
+
+  .cities {
+    fill: whitesmoke;
+    stroke: #666;
+    stroke-width: 0.5px;
+  }
+&lt;/style&gt;
+
+&lt;div&gt;&lt;small&gt;Mouse over the map to display features properties&lt;/small&gt;&lt;/div&gt;
+
+&lt;div class="container"&gt;
+  &lt;div class="row"&gt;
+    &lt;div class="col"&gt;
+      &lt;svg id="svg1" width="300" height="300" style="background-color: #eee"&gt;&lt;/svg&gt;
+    &lt;/div&gt;
+    &lt;div class="col"&gt;
+      &lt;div class="alert alert-info" id="info1"&gt;&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;script type="text/javascript"&gt;
+  d3.json('data/Countywide_Statistical_Area-OGRE.geojson').then(json =&gt; {
+
+    var svg = d3.select('#svg1'),
+      width = +svg.attr('width'),
+      height = +svg.attr('height');
+
+    var projection = d3.geoMercator()
+      .fitSize([width, height], json);
+
+    //use projection to recenter the map on LA County without islands 
+    // projection = d3.geoMercator()
+    // 	.center([-118.300, 34.295])
+    // 	.translate([width * 0.5, height * 0.5])
+    // 	.scale([10000]);
+
+    path = d3.geoPath()
+      .projection(projection);
+
+    svg.append('g')
+      .attr('class', 'cities')
+      .selectAll('path')
+      .data(json.features)
+      .enter()
+      .append('path')
+      .attr('d', path)
+      .on('mouseenter', function (d) {
+        svg.select('.selected')
+          .classed('selected', false);
+        d3.select(this)
+          .classed('selected', true);
+        d3.select('#info1')
+          .text('properties = ' + JSON.stringify(this.__data__.properties, null, 2));
+      });
+  });
+&lt;/script&gt;</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-3">
+    <style>
+      .selected {
+        fill: red;
+      }
+
+      .cities {
+        fill: whitesmoke;
+        stroke: #666;
+        stroke-width: 0.5px;
+      }
+    </style>
+    
+    <div class="ms-5"><small>Mouse over the map to display the features properties</small></div>
+    
+    <div class="container">
+      <div class="row">
+        <div class="col">
+          <svg id="svg1" width="300" height="300" style="background-color: #eee"></svg>
+        </div>
+        <div class="col">
+          <div class="alert alert-info" id="info1"></div>
+        </div>
+      </div>
+    </div>
+    
+    <script type="text/javascript">
+      d3.json('data/Countywide_Statistical_Area-OGRE.geojson').then(json => {
+    
+        var svg = d3.select('#svg1'),
+          width = +svg.attr('width'),
+          height = +svg.attr('height');
+    
+        var projection = d3.geoMercator()
+          .fitSize([width, height], json);
+    
+        //use projection to recenter the map on LA County without islands 
+        // projection = d3.geoMercator()
+        // 	.center([-118.300, 34.295])
+        // 	.translate([width * 0.5, height * 0.5])
+        // 	.scale([10000]);
+    
+        path = d3.geoPath()
+          .projection(projection);
+    
+        svg.append('g')
+          .attr('class', 'cities')
+          .selectAll('path')
+          .data(json.features)
+          .enter()
+          .append('path')
+          .attr('d', path)
+          .on('mouseenter', function (d) {
+            svg.select('.selected')
+              .classed('selected', false);
+            d3.select(this)
+              .classed('selected', true);
+            d3.select('#info1')
+              .text('properties = ' + JSON.stringify(this.__data__.properties, null, 2));
+          });
+      });
+    </script>
+  </div>
+
+  <div>The following code demonstrates how to use <code>array.filter</code> to filter out the features corresponding to the islands.</div>
+
+  <div class="mt-2 accordion mb-2" id="accordionOne">
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingOne">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
+          aria-expanded="false" aria-controls="collapseOne">
+          Source code
+        </button>
+      </h2>
+      <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne"
+        data-bs-parent="#accordionOne">
+        <div class="accordion-body">
+          <pre><code class="HTML" data-trim data-noescape>&lt;style&gt;
+  .selected {
+    fill: red;
+  }
+
+  .cities {
+    fill: whitesmoke;
+    stroke: #666;
+    stroke-width: 0.5px;
+  }
+&lt;/style&gt;
+
+&lt;div&gt;&lt;small&gt;Mouse over the map to display features properties&lt;/small&gt;&lt;/div&gt;
+
+&lt;div class="container"&gt;
+  &lt;div class="row"&gt;
+    &lt;div class="col"&gt;
+      &lt;svg id="svg1" width="300" height="300" style="background-color: #eee"&gt;&lt;/svg&gt;
+    &lt;/div&gt;
+    &lt;div class="col"&gt;
+      &lt;div class="alert alert-info" id="info1"&gt;&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+  d3.json('data/Countywide_Statistical_Area-OGRE.geojson').then(json => {
+    d3.json('data/Countywide_Statistical_Area-OGRE.geojson').then(json => {
+      json.features = json.features.filter(d => {
+        return (d.properties.OBJECTID !== 340 && //filter out Avalon
+          d.properties.OBJECTID !== 358 &&  //filter out Santa Catalina
+          d.properties.OBJECTID !== 351);  //filter out San Clemente
+      });
+
+    var svg = d3.select('#svg2'),
+      width = +svg.attr('width'),
+      height = +svg.attr('height');
+
+    var projection = d3.geoMercator()
+      .fitSize([width, height], json);
+
+    path = d3.geoPath()
+      .projection(projection);
+
+    svg.append('g')
+      .attr('class', 'cities')
+      .selectAll('path')
+      .data(json.features)
+      .enter()
+      .append('path')
+      .attr('d', path)
+      .on('mouseenter', function (d) {
+        svg.select('.selected')
+          .classed('selected', false);
+        d3.select(this)
+          .classed('selected', true);
+        d3.select('#info2')
+          .text('properties = ' + JSON.stringify(this.__data__.properties, null, 2));
+      });
+  });
+&lt;/script&gt;</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-3">
+    <div class="container">
+      <div class="row">
+        <div class="col">
+          <svg id="svg2" width="300" height="300" style="background-color: #eee"></svg>
+        </div>
+        <div class="col">
+          <div class="alert alert-info" id="info2"></div>
+        </div>
+      </div>
+    </div>
+  
+    <script>
+      d3.json('data/Countywide_Statistical_Area-OGRE.geojson').then(json => {
+        json.features = json.features.filter(d => {
+          return (d.properties.OBJECTID !== 340 && //filter out Avalon
+            d.properties.OBJECTID !== 358 &&  //filter out Santa Catalina
+            d.properties.OBJECTID !== 351);  //filter out San Clemente
+        });
+
+        var svg = d3.select('#svg2'),
+          width = +svg.attr('width'),
+          height = +svg.attr('height');
+
+        var projection = d3.geoMercator()
+          .fitSize([width, height], json);
+
+        path = d3.geoPath()
+          .projection(projection);
+
+        svg.append('g')
+          .attr('class', 'cities')
+          .selectAll('path')
+          .data(json.features)
+          .enter()
+          .append('path')
+          .attr('d', path)
+          .on('mouseenter', function (d) {
+            svg.select('.selected')
+              .classed('selected', false);
+            d3.select(this)
+              .classed('selected', true);
+            d3.select('#info2')
+              .text('properties = ' + JSON.stringify(this.__data__.properties, null, 2));
+          });
+      });
+    </script>
+  </div> 
+
+  <div class="mt-3 text-end"><a href="#"><i class="bi bi-arrow-up"></i> top</a></div>
+</body>
+
+</html>

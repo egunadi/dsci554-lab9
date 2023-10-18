@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>DSCI 554 🧪 Lab</title>
+
+  <link href="./node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <script src="./node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+  <link rel="stylesheet" href="./style.css">
+
+  <link href="node_modules/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="./github-dark-dimmed.min.css">
+  <script src="./highlight.min.js"></script>
+
+  <script src="./node_modules/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+  <link rel="stylesheet" href="./node_modules/highlightjs-copy/dist/highlightjs-copy.min.css" />
+
+  <script>
+    hljs.highlightAll();
+    hljs.addPlugin(new CopyButtonPlugin());
+  </script>
+
+  <script src="./node_modules/d3/dist/d3.min.js"></script>
+
+</head>
+
+<body>
+  <h1>🧪 GeoJSON from Shapefiles</h1>
+
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="index.html">Index</a></li>
+      <li class="breadcrumb-item active" aria-current="page">🧪 GeoJSON from Shapefiles</li>
+    </ol>
+  </nav>
+
+  <h2>Why create GeoJSON from Shapefiles?</h2>
+
+  <p>Generally Shapefiles are the source files used to generate other GIS formats. D3 is picky with the way GeoJSON file are formatted and often GeoJSON files downloaded from public sources are incompatible. You can try to edit the file to make if compatible with D3 or export a new GeoJSON from the source Shapefile. As an example this <code>Countywide_Statistical_Area.geojson</code> file downloaded from <a href="https://data.lacounty.gov/">County of Los Angeles Open Data</a> portal is not compatible with D3.</p>
+
+  <div class="mt-2 accordion mb-2" id="accordionOne">
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingOne">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
+          aria-expanded="false" aria-controls="collapseOne">
+          Source code
+        </button>
+      </h2>
+      <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne"
+        data-bs-parent="#accordionOne">
+        <div class="accordion-body">
+          <pre><code class="HTML" data-trim data-noescape>&lt;style&gt;
+  .cities {
+    fill: whitesmoke;
+    stroke: #666;
+    stroke-width: 0.5px;
+  }
+&lt;/style&gt;
+
+&lt;svg id="svg0" width="300" height="300" style="background-color: #eee"&gt;&lt;/svg&gt;
+
+&lt;script type="text/javascript"&gt;
+d3.json('data/Countywide_Statistical_Area.geojson').then(json =&gt; {
+
+  var svg = d3.select('#svg0'),
+    width = +svg.attr('width'),
+    height = +svg.attr('height');
+
+  var projection = d3.geoMercator()
+    .fitSize([width, height], json);
+
+  path = d3.geoPath()
+    .projection(projection);
+
+  svg.append('g')
+    .attr('class', 'cities')
+    .selectAll('path')
+    .data(json.features)
+    .enter()
+    .append('path')
+    .attr('d', path);
+  });
+&lt;/script&gt;</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-3 mb-3">
+    <style>
+      .cities {
+        fill: whitesmoke;
+        stroke: #666;
+        stroke-width: 0.5px;
+      }
+    </style>
+    
+    <svg id="svg0" width="300" height="300" style="background-color: #eee"></svg>
+    
+    <script type="text/javascript">
+      d3.json('data/Countywide_Statistical_Area.geojson').then(json => {
+        var svg = d3.select('#svg0'),
+          width = +svg.attr('width'),
+          height = +svg.attr('height');
+    
+        var projection = d3.geoMercator()
+          .fitSize([width, height], json);
+    
+        path = d3.geoPath()
+          .projection(projection);
+    
+        svg.append('g')
+          .attr('class', 'cities')
+          .selectAll('path')
+          .data(json.features)
+          .enter()
+          .append('path')
+          .attr('d', path);
+      });
+    </script>		
+  </div>
+
+  <h2>Ogre</h2>
+
+  <p><a target="_blank" href="https://ogre.adc4gis.com/">Ogre</a> is a web tool that can convert Shapefiles to GeoJSON. The following shows how to use Ogre to convert the Shapefiles from <a href="https://data.lacounty.gov/datasets/lacounty::city-boundaries-3/explore?location=33.787593%2C-117.818108%2C7.56">data.lacounty.gov City Boundaries</a> to GeoJSON.</p>
+
+  <ul>
+    <li>Go to <a href="https://data.lacounty.gov/">County of Los Angeles Open Data</a> and search for <code>Countywide Statistical Area</code></li>
+    <li>Download the <i>Shapefile</i> archive as <code>Countywide_Statistical_Area.zip</code></li>
+    <li>Go to <a target="_blank" href="https://ogre.adc4gis.com/">Ogre</a> and upload <code>Countywide_Statistical_Area.zip</code> in the <kbd>Convert to GeoJSON</kbd> dialog, then click <kbd>CONVERT TO GeoJSON</kbd></li>
+    <li>Wait for the output to fully load in the page then cut and paste the result in <a target="_blank" href="Countywide_Statistical_Area-OGRE.geojson">Countywide_Statistical_Area-OGRE.geojson</a></li>
+  </ul>
+
+  <p>The code below displays <a target="_blank" href="Countywide_Statistical_Area-OGRE.geojson">Countywide_Statistical_Area-OGRE.geojson</a> with D3.</p>
+
+  <div class="mt-2 accordion mb-2" id="accordionOne">
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingOne">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
+          aria-expanded="false" aria-controls="collapseOne">
+          Source code
+        </button>
+      </h2>
+      <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne"
+        data-bs-parent="#accordionOne">
+        <div class="accordion-body">
+          <pre><code class="HTML" data-trim data-noescape>&lt;style&gt;
+  .cities {
+    fill: whitesmoke;
+    stroke: #666;
+    stroke-width: 0.5px;
+  }
+&lt;/style&gt;
+
+&lt;svg id="svg1" width="300" height="300" style="background-color: #eee"&gt;&lt;/svg&gt;
+
+&lt;script type="text/javascript"&gt;
+  d3.json('data/Countywide_Statistical_Area-OGRE.geojson').then(json =&gt; {
+
+    var svg = d3.select('#svg1'),
+      width = +svg.attr('width'),
+      height = +svg.attr('height');
+
+    var projection = d3.geoMercator()
+      .fitSize([width, height], json);
+
+    path = d3.geoPath()
+      .projection(projection);
+
+    svg.append('g')
+      .attr('class', 'cities')
+      .selectAll('path')
+      .data(json.features)
+      .enter()
+      .append('path')
+      .attr('d', path);
+  });
+&lt;/script&gt;</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-3 mb-3">
+    <svg id="svg1" width="300" height="300" style="background-color: #eee"></svg>
+    
+    <script type="text/javascript">
+      d3.json('data/Countywide_Statistical_Area-OGRE.geojson').then(json => {
+    
+        var svg = d3.select('#svg1'),
+          width = +svg.attr('width'),
+          height = +svg.attr('height');
+    
+        var projection = d3.geoMercator()
+          .fitSize([width, height], json);
+    
+        path = d3.geoPath()
+          .projection(projection);
+    
+        svg.append('g')
+          .attr('class', 'cities')
+          .selectAll('path')
+          .data(json.features)
+          .enter()
+          .append('path')
+          .attr('d', path);
+      });
+    </script>
+  </div>
+
+  <h2>shapefile</h2>
+
+  <div>The <a href="https://www.npmjs.com/package/shapefile">shapefile</a> package is a node streaming Shapefile parser. If includes <code>shp2json</code> a node command line tool that we can use to export Shapefiles to GeoJSON. See the <a href="https://www.npmjs.com/package/shapefile#command-line-reference">Command Line Reference</a> for usage. You can install the <code>shapefile</code> with <code>npm i shapefile</code> (already available, see <a href="package.json">package.json</a>). To generate a new GeoJSON from the Countywide Statistical Area Shapefiles:</div>
+
+  <ul>
+    <li>Go to <a href="https://data.lacounty.gov/">County of Los Angeles Open Data</a> and search for <code>Countywide Statistical Area</code></li>
+    <li>Download the <i>Shapefile</i> archive as <code>Countywide_Statistical_Area.zip</code></li>
+    <li>Uncompress <code>Countywide_Statistical_Area.zip</code> <b>in this folder</b></li>
+    <li>Open a terminal <b>in this folder</b> and execute the command:
+      <pre><code class="sh">./node_modules/shapefile/bin/shp2json -o Countywide_Statistical_Area-SHAPEFILE.json Countywide_Statistical_Area/Countywide_Statistical_Area.shp</code></pre>
+    </li>
+  </ul>
+
+  <p>The code below displays <a target="_blank" href="data/Countywide_Statistical_Area-OGRE.geojson">Countywide_Statistical_Area-SHAPEFILE.geojson</a> with D3.</p>
+
+  <div class="mt-2 accordion mb-2" id="accordionOne">
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingOne">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
+          aria-expanded="false" aria-controls="collapseOne">
+          Source code
+        </button>
+      </h2>
+      <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne"
+        data-bs-parent="#accordionOne">
+        <div class="accordion-body">
+          <pre><code class="HTML" data-trim data-noescape>&lt;style&gt;
+  .cities {
+    fill: whitesmoke;
+    stroke: #666;
+    stroke-width: 0.5px;
+  }
+&lt;/style&gt;
+
+&lt;svg id="svg2" width="300" height="300" style="background-color: #eee"&gt;&lt;/svg&gt;
+
+&lt;script type="text/javascript"&gt;
+  d3.json('data/Countywide_Statistical_Area-SHAPEFILE.json').then(json =&gt; {
+
+    var svg = d3.select('#svg2'),
+      width = +svg.attr('width'),
+      height = +svg.attr('height');
+
+    var projection = d3.geoMercator()
+      .fitSize([width, height], json);
+
+    path = d3.geoPath()
+      .projection(projection);
+
+    svg.append('g')
+      .attr('class', 'cities')
+      .selectAll('path')
+      .data(json.features)
+      .enter()
+      .append('path')
+      .attr('d', path);
+  });
+&lt;/script&gt;</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-3 mb-3">
+    <svg id="svg2" width="300" height="300" style="background-color: #eee"></svg>
+
+    <script type="text/javascript">
+      d3.json('data/Countywide_Statistical_Area-SHAPEFILE.json').then(json => {
+
+        var svg = d3.select('#svg2'),
+          width = +svg.attr('width'),
+          height = +svg.attr('height');
+
+        var projection = d3.geoMercator()
+          .fitSize([width, height], json);
+
+        path = d3.geoPath()
+          .projection(projection);
+
+        svg.append('g')
+          .attr('class', 'cities')
+          .selectAll('path')
+          .data(json.features)
+          .enter()
+          .append('path')
+          .attr('d', path);
+      });
+    </script>
+  </div>
+
+  <h2>QGIS</h2>
+
+  <p><a target="_blank" href="https://www.qgis.org/en/site/">QGIS</a> is a free and open-source cross-platform desktop geographic information system (GIS) application that supports viewing, editing, and analysis of geospatial data. It is commonly used to create maps and analyze geospatial data. QGIS supports shapefiles, GeoJSON, and many other formats. You can download QGIS <a target="_blank" href="https://www.qgis.org/en/site/forusers/download.html">here</a>. The following shows how to use QGIS to export Shapefiles to GeoJSON. </p>
+
+  <div>
+    <ul>
+      <li>Open QGIS and click <kbd>Layer > Add Layer > Add Vector Layer</kbd>. In the dialog select <code>Countywide_Statistical_Area.zip</code>, click <kbd>Add</kbd> and <kbd>Close</kbd>. You should see the following:
+        <div class="p-2"><img width="850px" src="picts/qgis-vector-layer.png" alt=""></div>
+      </li>
+      <li>Click <kbd>Layer > Save As...</kbd>, choose to save as GeoJSON and save to <code>Countywide_Statistical_Area-QGIS.geojson</code>.
+      </li>
+    </ul>
+  </div>
+
+  <p>The code below displays <a target="_blank" href="data/Countywide_Statistical_Area-OGRE.geojson">Countywide_Statistical_Area-QGIS.geojson</a> with D3.</p>
+
+  <div class="mt-2 accordion mb-2" id="accordionOne">
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingOne">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
+          aria-expanded="false" aria-controls="collapseOne">
+          Source code
+        </button>
+      </h2>
+      <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne"
+        data-bs-parent="#accordionOne">
+        <div class="accordion-body">
+          <pre><code class="HTML" data-trim data-noescape>&lt;style&gt;
+  .cities {
+    fill: whitesmoke;
+    stroke: #666;
+    stroke-width: 0.5px;
+  }
+&lt;/style&gt;
+
+&lt;svg3 id="svg1" width="300" height="300" style="background-color: #eee"&gt;&lt;/svg&gt;
+
+&lt;script type="text/javascript"&gt;
+  d3.json('data/Countywide_Statistical_Area-QGIS.json').then(json =&gt; {
+
+    var svg = d3.select('#svg3'),
+      width = +svg.attr('width'),
+      height = +svg.attr('height');
+
+    var projection = d3.geoMercator()
+      .fitSize([width, height], json);
+
+    path = d3.geoPath()
+      .projection(projection);
+
+    svg.append('g')
+      .attr('class', 'cities')
+      .selectAll('path')
+      .data(json.features)
+      .enter()
+      .append('path')
+      .attr('d', path);
+  });
+&lt;/script&gt;</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-3 mb-3">
+    <svg id="svg3" width="300" height="300" style="background-color: #eee"></svg>
+
+    <script type="text/javascript">
+      d3.json('data/Countywide_Statistical_Area-QGIS.geojson').then(json => {
+
+        var svg = d3.select('#svg3'),
+          width = +svg.attr('width'),
+          height = +svg.attr('height');
+
+        var projection = d3.geoMercator()
+          .fitSize([width, height], json);
+
+        path = d3.geoPath()
+          .projection(projection);
+
+        svg.append('g')
+          .attr('class', 'cities')
+          .selectAll('path')
+          .data(json.features)
+          .enter()
+          .append('path')
+          .attr('d', path);
+      });
+    </script>
+  </div>
+
+  <div class="mt-3 text-end"><a href="#"><i class="bi bi-arrow-up"></i> top</a></div>
+</body>
+
+</html>
